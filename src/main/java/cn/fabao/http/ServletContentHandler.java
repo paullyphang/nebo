@@ -47,8 +47,6 @@ public class ServletContentHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private HttpDataFactory factory = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
     private HttpPostRequestDecoder decoder;
-    private HttpServletRequest requestRequest;
-
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -95,20 +93,6 @@ public class ServletContentHandler extends SimpleChannelInboundHandler<HttpObjec
                 }
             }
 
-//            while (decoder.hasNext()) {
-//                InterfaceHttpData data = decoder.next();
-//                if (data != null) {
-//                    try {
-//                        if(data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute){
-//                            Attribute attribute = (Attribute) data;
-//                            Map<String,String[]> params= servletRequest.getParameterMap();
-//                            HttpUtils.setParamMap(attribute.getName(),attribute.getValue(),params);
-//                        }
-//                    } finally {
-//                        data.release();
-//                    }
-//                }
-//            }
         }
 
         if (decoder != null && msg instanceof LastHttpContent) {

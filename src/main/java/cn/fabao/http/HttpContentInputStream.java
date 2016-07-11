@@ -46,7 +46,6 @@ class HttpContentInputStream extends ServletInputStream {
     private final BlockingQueue<HttpContent> queue;
     private HttpContent current;
     private ReadListener readListener;
-    private ByteBuf fullContentByteBuf;
 
     HttpContentInputStream(Channel channel) {
         this.channel = checkNotNull(channel);
@@ -63,7 +62,6 @@ class HttpContentInputStream extends ServletInputStream {
     @Override
     public int readLine(byte[] b, int off, int len) throws IOException {
         checkNotNull(b);
-        // TODO use ByteBuf native approach, i.e. bytesBefore, ByteBufProcessor
         return super.readLine(b, off, len);
     }
 
@@ -93,7 +91,6 @@ class HttpContentInputStream extends ServletInputStream {
     @Override
     public long skip(long n) throws IOException {
         checkNotClosed();
-        // TODO implement skip that doesn't read bytes
         return readContent(Ints.checkedCast(n)).readableBytes();
     }
 
@@ -105,7 +102,6 @@ class HttpContentInputStream extends ServletInputStream {
     @Override
     public void close() throws IOException {
         if (closed.compareAndSet(false, true)) {
-            // FIXME release the non-written HttpContents?
             queue.clear();
             current = null;
         }
