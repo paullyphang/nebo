@@ -1,4 +1,14 @@
-*.class
+# Eclipse project files
+.project
+.classpath
+.settings
+
+# IntelliJ IDEA project files and directories
 *.iml
-.idea
-target
+*.ipr
+*.iws
+.idea/
+
+# Build targets
+/target
+*/target
