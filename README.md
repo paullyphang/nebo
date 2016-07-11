@@ -1,5 +1,5 @@
 # nebo
-1.以netty为内核，基于springboot 的web container
+1.以netty为内核，基于springboot 的servlet container
 
 2.支持单端口多协议（http thrift）
 
