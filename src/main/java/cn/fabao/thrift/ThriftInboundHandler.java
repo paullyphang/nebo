@@ -22,27 +22,7 @@ public class ThriftInboundHandler extends ChannelInboundHandlerAdapter {
     public ThriftInboundHandler(NettyEmbeddedContext context) {
         this.context = context;
         this.processor = context.getProcessor();
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils.findWebApplicationContext(context);
-//        String[] strarr = webApplicationContext.getBeanNamesForType(Objects.class);
-      //  String[] strarr = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(webApplicationContext, ThriftEndpoint.class);
-
-//        for (String s :strarr){
-//            Object target = webApplicationContext.getBean(s);
-//            Class[] classes = target.getClass().getInterfaces();
-//            for(Class clz :classes){
-//                if(!clz.equals(ThriftEndpoint.class)){
-//                    Class processorClass = null;
-//                    try {
-//                        processorClass = Class.forName(clz.getName().split("\\$")[0] + "$Processor");
-//                        TProcessor p = (TProcessor) processorClass.getDeclaredConstructors()[0].newInstance(target);
-//                        log.info("registerProcessorName : " + s + " registerProcessorClass: " + p.getClass());
-//                        processor.registerProcessor(s,p);
-//                    } catch (Exception e) {
-//                        log.error("registerProcessor error : " + e.getMessage() , e);
-//                    }
-//                }
-//            }
-//        }
+        registerSrv();
     }
 
     @Override
@@ -82,4 +62,32 @@ public class ThriftInboundHandler extends ChannelInboundHandlerAdapter {
 //        System.out.println(b.compareAndSet(false,true));
 //        System.out.println(b.compareAndSet(true,false));
 //    }
+
+        private void registerSrv() {
+        TMultiplexedProcessor tProcessor = new TMultiplexedProcessor();
+        context.setProcessor(tProcessor);
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.findWebApplicationContext(context);
+        String[] strarr = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(webApplicationContext,Object.class);
+        for (String s :strarr){
+           // logger.info("beans >>>>>>>>>>>>>>> " + s);
+            Object target = webApplicationContext.getBean(s);
+            ThriftEndpoint thriftEndpointAnnotation = target.getClass().getAnnotation(ThriftEndpoint.class);
+            if(thriftEndpointAnnotation!=null){
+                try {
+                    Class targetInterface = target.getClass().getInterfaces()[0];
+                    Class processorClass = Class.forName(targetInterface.getName().split("\\$")[0] + "$Processor");
+                    TProcessor p = (TProcessor) processorClass.getDeclaredConstructors()[0].newInstance(target);
+//                    if(StringUtils.isNotBlank(thriftEndpointAnnotation.serviceName())){
+//                        s = thriftEndpointAnnotation.serviceName();
+//                    }
+                    log.info("registerProcessorName : " + s + " registerProcessorClass: " + p.getClass());
+                    tProcessor.registerProcessor(s,p);
+                } catch (Exception e) {
+                    log.error("registerProcessor error : " + e.getMessage() , e);
+                }
+            }
+
+        }
+    }
+
 }

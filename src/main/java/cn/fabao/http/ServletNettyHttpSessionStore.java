@@ -46,7 +46,7 @@ public class ServletNettyHttpSessionStore implements HttpSessionStore {
         return sessions.get(sessionId);
     }
 
-    protected  synchronized String generateNewSessionId() {
+    protected  String generateNewSessionId() {
         return  System.currentTimeMillis() + "";
     }
 

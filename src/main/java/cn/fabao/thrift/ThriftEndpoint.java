@@ -1,7 +1,12 @@
 package cn.fabao.thrift;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Created by pengbo on 2016/6/30.
  */
-public interface ThriftEndpoint {
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ThriftEndpoint {
+    String serviceName() default "";
 }

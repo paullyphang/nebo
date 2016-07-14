@@ -28,6 +28,7 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TMultiplexedProcessor;
@@ -37,6 +38,8 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import java.lang.annotation.Annotation;
 import java.net.InetSocketAddress;
 
 /**
@@ -140,23 +143,30 @@ public class NettyEmbeddedServletContainer implements EmbeddedServletContainer {
         TMultiplexedProcessor tProcessor = new TMultiplexedProcessor();
         context.setProcessor(tProcessor);
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.findWebApplicationContext(context);
-        String[] strarr = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(webApplicationContext, ThriftEndpoint.class);
+        String[] strarr = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(webApplicationContext,Object.class);
         for (String s :strarr){
             Object target = webApplicationContext.getBean(s);
-            Class[] classes = target.getClass().getInterfaces();
-            for(Class clz :classes){
-                if(!clz.equals(ThriftEndpoint.class)){
-                    Class processorClass = null;
-                    try {
-                        processorClass = Class.forName(clz.getName().split("\\$")[0] + "$Processor");
-                        TProcessor p = (TProcessor) processorClass.getDeclaredConstructors()[0].newInstance(target);
-                        logger.info("registerProcessorName : " + s + " registerProcessorClass: " + p.getClass());
-                        tProcessor.registerProcessor(s,p);
-                    } catch (Exception e) {
-                        logger.error("registerProcessor error : " + e.getMessage() , e);
+            ThriftEndpoint thriftEndpointAnnotation = target.getClass().getAnnotation(ThriftEndpoint.class);
+            if(thriftEndpointAnnotation!=null){
+                try {
+                    Class targetInterface = target.getClass().getInterfaces()[0];
+                    Class processorClass = Class.forName(targetInterface.getName().split("\\$")[0] + "$Processor");
+                    TProcessor p = (TProcessor) processorClass.getDeclaredConstructors()[0].newInstance(target);
+                    if(StringUtils.isNotBlank(thriftEndpointAnnotation.serviceName())){
+                        s = thriftEndpointAnnotation.serviceName();
                     }
+                    System.out.println(thriftEndpointAnnotation.serviceName());
+                    logger.info("registerProcessorName : " + s + " registerProcessorClass: " + p.getClass());
+                    tProcessor.registerProcessor(s,p);
+                } catch (Exception e) {
+                    logger.error("registerProcessor error : " + e.getMessage() , e);
                 }
             }
+
         }
     }
+
+
+
+
 }

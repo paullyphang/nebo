@@ -91,7 +91,7 @@ public class NettyHttpSession implements HttpSession {
     public NettyHttpSession(ServletContext servletContext, String id) {
         this.servletContext = servletContext;
         this.id = (id != null ? id : Integer.toString(nextId++));
-        this.maxInactiveInterval = 30 * 1000;
+        this.maxInactiveInterval = 150 * 1000;
     }
 
     @Override
