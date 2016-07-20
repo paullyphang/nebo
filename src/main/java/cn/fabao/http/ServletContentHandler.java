@@ -17,6 +17,7 @@
 
 package cn.fabao.http;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -41,8 +42,8 @@ public class ServletContentHandler extends SimpleChannelInboundHandler<HttpObjec
     private HttpServletRequest servletRequest;
 
     public ServletContentHandler(NettyEmbeddedContext servletContext, Channel channel) {
-        this.inputStream = new HttpContentInputStream(channel);
         this.servletContext = servletContext;
+        inputStream = new HttpContentInputStream();
     }
 
     private HttpDataFactory factory = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
@@ -50,8 +51,9 @@ public class ServletContentHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        inputStream = new HttpContentInputStream(ctx.channel());
-    }
+//        inputStream = new HttpContentInputStream(ctx.channel());
+        log.info("channelActive >>>>>>>>>>>>>>>>>>>>> ");
+   }
 
 
     @Override
@@ -76,9 +78,8 @@ public class ServletContentHandler extends SimpleChannelInboundHandler<HttpObjec
 
         if (decoder != null && msg instanceof HttpContent) {
             HttpContent chunk = (HttpContent) msg;
-            decoder.offer(chunk);
+            log.info("HttpContent" + chunk.content().readableBytes());
             inputStream.addContent(chunk);
-
             List<InterfaceHttpData> interfaceHttpDatas = decoder.getBodyHttpDatas();
 
             for (InterfaceHttpData data : interfaceHttpDatas) {

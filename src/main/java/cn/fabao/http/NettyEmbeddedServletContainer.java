@@ -18,6 +18,8 @@
 package cn.fabao.http;
 
 import cn.fabao.DispatcherInbound;
+import cn.fabao.hessian.HessianConstant;
+import cn.fabao.hessian.HessianFilter;
 import cn.fabao.thrift.ThriftEndpoint;
 import com.google.common.base.StandardSystemProperty;
 import io.netty.bootstrap.ServerBootstrap;
@@ -92,6 +94,7 @@ public class NettyEmbeddedServletContainer implements EmbeddedServletContainer {
         }
         logger.info(context.getServerInfo() + " started on port: " + getPort());
         context.setInitialised(true);
+        context.addFilter(HessianConstant.HESSIAN_PATH,new HessianFilter(context));
         ServletNettyHttpSessionManager.start();
         registerSrv();
     }
