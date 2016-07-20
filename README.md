@@ -12,7 +12,7 @@
 
 3. 发布thrift服务，把iface实现类同时实现ThriftEndpoint接口即可 （支持thrift协议）
 
-4. 发布hessian服务，把需要暴露的类使用HessianEndpoint修饰即可 （支持thrift协议）
+4. 发布hessian服务，把需要暴露的类使用HessianEndpoint修饰即可 （支持hessian协议）
  
 
 ### 接下来计划  ###
