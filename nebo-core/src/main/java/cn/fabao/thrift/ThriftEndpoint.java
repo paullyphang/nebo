@@ -1,4 +1,4 @@
-package cn.fabao.hessian;
+package cn.fabao.thrift;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,6 +7,6 @@ import java.lang.annotation.RetentionPolicy;
  * Created by pengbo on 2016/6/30.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HessianEndpoint {
-    String servicePattern() default "";
+public @interface ThriftEndpoint {
+    String serviceName() default "";
 }
