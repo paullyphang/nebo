@@ -5,9 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.fabao</groupId>
-    <artifactId>nebo</artifactId>
+    <artifactId>nebo-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>nebo-core</module>
+        <module>nebo-example</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -130,12 +135,18 @@
             <version>2.6</version>
         </dependency>
 
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.0.CR3</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.38</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -153,5 +164,7 @@
 
         </plugins>
     </build>
+
+
 
 </project>

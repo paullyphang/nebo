@@ -1,4 +1,4 @@
-package cn.fabao.hessian.hessian;
+package cn.fabao.hessian;
 
 /**
  * Created by pengbo on 2016/7/19.

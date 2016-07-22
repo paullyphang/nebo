@@ -112,7 +112,6 @@ public class TNiftyTransport extends TTransport
     public void write(byte[] bytes, int offset, int length)
             throws TTransportException
     {
-        System.out.println(length);
         out.writeBytes(bytes, offset, length);
     }
 

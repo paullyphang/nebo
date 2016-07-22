@@ -11,5 +11,13 @@
 
     <artifactId>nebo-example</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>cn.fabao</groupId>
+            <artifactId>nebo-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

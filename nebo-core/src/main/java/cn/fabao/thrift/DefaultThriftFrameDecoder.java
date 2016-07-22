@@ -53,7 +53,7 @@ public class DefaultThriftFrameDecoder extends ByteToMessageDecoder {
 
             if (messageBuffer == null) {
                 return ;
-            }
+        }
 
             // A non-zero MSB for the first byte of the message implies the message starts with a
             // protocol id (and thus it is unframed).

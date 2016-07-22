@@ -1,4 +1,4 @@
-package cn.fabao.hessian.hessian;
+package cn.fabao.hessian;
 
 import cn.fabao.hessian.HessianEndpoint;
 import org.springframework.stereotype.Component;
