@@ -13,21 +13,22 @@
 3. 发布thrift服务，把iface实现类同时实现ThriftEndpoint接口即可 （支持thrift协议）
 
 4. 发布hessian服务，把需要暴露的类使用HessianEndpoint修饰即可 （支持hessian协议）
- 
 
-### 性能  ### 
+
+ 
+### 性能  ###
 
 测试工具 JMETER
 
-HTTP协议 ，简单ECHO测试
+1. HTTP协议 ，简单ECHO测试
 
 200并发下，nebo吞吐量约为10000   tomcat吞吐量约为12000
 
 400并发下，nebo吞吐量约为11000   tomcat吞吐量约为10000
 
-THRIFT协议，待测试
+2. THRIFT协议，待测试
 
-
+3. HESSIAN协议，待测试
 
 
 
