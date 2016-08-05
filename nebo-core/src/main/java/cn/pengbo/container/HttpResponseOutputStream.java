@@ -1,0 +1,342 @@
+///*
+// * Copyright 2014 the original author or authors.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   container://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// *
+// */
+//
+//package com.pengbo.netty;
+//
+//import io.netty.buffer.ByteBuf;
+//import io.netty.buffer.Unpooled;
+//import io.netty.channel.ChannelFuture;
+//import io.netty.channel.ChannelFutureListener;
+//import io.netty.channel.ChannelHandlerContext;
+//import io.netty.handler.codec.container.DefaultLastHttpContent;
+//import io.netty.handler.codec.container.HttpHeaders;
+//import io.netty.handler.codec.container.HttpResponse;
+//
+//import javax.servlet.ServletOutputStream;
+//import javax.servlet.WriteListener;
+//import java.io.IOException;
+//import java.util.Arrays;
+//
+//import static com.google.common.base.Preconditions.checkNotNull;
+//import static com.google.common.base.Preconditions.checkState;
+//
+///**
+// * A buffered {@link javax.servlet.ServletOutputStream}, that writes Netty HTTP codec POJOs to the associated
+// * {@link io.netty.channel.ChannelHandlerContext}.
+// *
+// * @author Danny Thomas
+// */
+//class HttpResponseOutputStream extends ServletOutputStream {
+//
+//    private static final int DEFAULT_BUFFER_SIZE = 1024 * 8;
+//    private final ChannelHandlerContext ctx;
+//    private final NettyHttpServletResponse servletResponse;
+//    private ByteBuf byteBuf;
+//    private int count;
+//
+//
+//    HttpResponseOutputStream(ChannelHandlerContext ctx, NettyHttpServletResponse servletResponse) {
+//        this.ctx = ctx;
+//        this.servletResponse = servletResponse;
+//        this.byteBuf = ctx.alloc().buffer(DEFAULT_BUFFER_SIZE);
+//    }
+//
+//    @Override
+//    public boolean isReady() {
+//        return true; // TODO implement
+//    }
+//
+//    @Override
+//    public void setWriteListener(WriteListener writeListener) {
+//        checkNotNull(writeListener);
+//        // TODO ISE when called more than once
+//        // TODO ISE when associated request is not async
+//    }
+//
+//    @Override
+//    public void write(byte[] b, int off, int len) throws IOException {
+//        count += len;
+//        byteBuf.writeBytes(b,off,len);
+//    }
+//
+//    @Override
+//    public void write(int b) throws IOException {
+//        count++;
+//        byteBuf.writeByte(b);
+//    }
+//
+//
+//    @Override
+//    public void flush() throws IOException {
+//       // flushBuffer();
+//        HttpResponse nettyResponse = servletResponse.getNettyResponse();
+//        HttpHeaders.setContentLength(nettyResponse, count);
+//        ctx.write(byteBuf, ctx.voidPromise());
+//        ctx.write(nettyResponse, ctx.voidPromise());
+//    }
+//
+//    @Override
+//    public void close() throws IOException {
+//        ctx.flush();
+//    }
+//
+//
+////    private void flushBuffer() {
+////        flushBuffer(false);
+////    }
+//
+////    private void flushBuffer(boolean lastContent) {
+////        if (count > 0) {
+////            ByteBuf content = ctx.alloc().buffer(count);
+////            content.writeBytes(buf, 0, count);
+////            count = 0;
+////            writeContent(content, lastContent);
+////        } else if (lastContent) {
+////            writeContent(Unpooled.EMPTY_BUFFER, true);
+////        }
+////    }
+//
+////    private void writeContent(ByteBuf content, boolean lastContent) {
+////        // TODO block if channel is not writable to avoid heap utilisation
+////        if (!servletResponse.isCommitted()) {
+////            writeResponse(lastContent);
+////        }
+////        if (content.readableBytes() > 0) {
+////            assert content.refCnt() == 1;
+////            ctx.write(content, ctx.voidPromise());
+////        }
+////        if (lastContent) {
+////            HttpResponse nettyResponse = servletResponse.getNettyResponse();
+////            ChannelFuture future = ctx.write(DefaultLastHttpContent.EMPTY_LAST_CONTENT);
+////            if (!HttpHeaders.isKeepAlive(nettyResponse)) {
+////                future.addListener(ChannelFutureListener.CLOSE);
+////            }
+////        }
+////    }
+//
+////    private void writeResponse(boolean lastContent) {
+////        HttpResponse response = servletResponse.getNettyResponse();
+////        // TODO implement exceptions required by container://tools.ietf.org/html/rfc2616#section-4.4
+////        if (!HttpHeaders.isContentLengthSet(response)) {
+////            if (lastContent) {
+////                HttpHeaders.setContentLength(response, count);
+////            } else {
+////                HttpHeaders.setTransferEncodingChunked(response);
+////            }
+////        }
+////        ctx.write(response, ctx.voidPromise());
+////    }
+//
+////    @Override
+////    public void close() throws IOException {
+////        if (closed) {
+////            return;
+////        }
+////        closed = true;
+////        try {
+////            flushBuffer(true);
+////            ctx.flush();
+////        } finally {
+////            buf = null;
+////        }
+////    }
+//
+//    void resetBuffer() {
+//        byteBuf.discardReadBytes();
+//        count = 0;
+//    }
+//
+//    int getBufferSize() {
+//        return byteBuf.readableBytes();
+//    }
+//
+//    void setBufferSize(int size) {
+//        byteBuf = Unpooled.buffer(size);;
+//    }
+//
+//    public static void main(String[] args) {
+//        int[] a = {1,2,3,4};
+//        int[] b = {5,6,7,8};
+//        System.arraycopy(a,1,b, 0,3);
+//        System.out.println(Arrays.toString(b));
+//
+//    }
+//}
+
+
+/*
+ * Copyright 2015-2020 msun.com All right reserved.
+ */
+package cn.pengbo.container;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpResponse;
+
+import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+
+/**
+ * A buffered {@link ServletOutputStream}, that writes Netty HTTP codec POJOs to the associated
+ * {@link ChannelHandlerContext}.
+ *
+ *
+ */
+@SuppressWarnings({ "unused", "deprecation" })
+class HttpResponseOutputStream extends ServletOutputStream {
+
+    private static final int               DEFAULT_BUFFER_SIZE = 1024 * 8;
+
+    private final ChannelHandlerContext    ctx;
+    private final NettyHttpServletResponse servletResponse;
+    private byte[]                         buf;
+    private int                            count;
+    private boolean                        closed;
+    private WriteListener                  writeListener;
+
+    HttpResponseOutputStream(ChannelHandlerContext ctx, NettyHttpServletResponse servletResponse) {
+        this.ctx = ctx;
+        this.servletResponse = servletResponse;
+        this.buf = new byte[DEFAULT_BUFFER_SIZE];
+    }
+
+    @Override
+    public boolean isReady() {
+        return true; // TODO implement
+    }
+
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+        checkNotNull(writeListener);
+        // TODO ISE when called more than once
+        // TODO ISE when associated request is not async
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        if (len > count) {
+            flushBuffer();
+            ByteBuf content = ctx.alloc().buffer(len);
+            content.writeBytes(b, off, len);
+            writeContent(content, false);
+            return;
+        }
+        writeBufferIfNeeded(len);
+        System.arraycopy(b, off, buf, count, len);
+        count += len;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+        writeBufferIfNeeded(1);
+        buf[count++] = (byte) b;
+    }
+
+    private void writeBufferIfNeeded(int len) throws IOException {
+        if (len > buf.length - count) {
+            flushBuffer();
+        }
+    }
+
+    @Override
+    public void flush() throws IOException {
+        flushBuffer();
+    }
+
+    private void flushBuffer() {
+        flushBuffer(false);
+    }
+
+    private void flushBuffer(boolean lastContent) {
+        if (count > 0) {
+            ByteBuf content = ctx.alloc().buffer(count);
+            content.writeBytes(buf, 0, count);
+            count = 0;
+            writeContent(content, lastContent);
+        } else if (lastContent) {
+            writeContent(Unpooled.EMPTY_BUFFER, true);
+        }
+    }
+
+    private void writeContent(ByteBuf content, boolean lastContent) {
+        // TODO block if channel is not writable to avoid heap utilisation
+        if (!servletResponse.isCommitted()) {
+            writeResponse(lastContent);
+        }
+        if (content.readableBytes() > 0) {
+            assert content.refCnt() == 1;
+            ctx.write(content, ctx.voidPromise());
+        }
+        if (lastContent) {
+            HttpResponse nettyResponse = servletResponse.getNettyResponse();
+            ChannelFuture future = ctx.write(DefaultLastHttpContent.EMPTY_LAST_CONTENT);
+            if (!HttpHeaders.isKeepAlive(nettyResponse)) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
+        }
+    }
+
+    private void writeResponse(boolean lastContent) {
+        HttpResponse response = servletResponse.getNettyResponse();
+        // TODO implement exceptions required by container://tools.ietf.org/html/rfc2616#section-4.4
+        if (!HttpHeaders.isContentLengthSet(response)) {
+            if (lastContent) {
+                HttpHeaders.setContentLength(response, count);
+            } else {
+                HttpHeaders.setTransferEncodingChunked(response);
+            }
+        }
+        ctx.write(response, ctx.voidPromise());
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (closed) {
+            return;
+        }
+        closed = true;
+        try {
+            flushBuffer(true);
+            ctx.flush();
+        } finally {
+            buf = null;
+        }
+    }
+
+    void resetBuffer() {
+        assert !servletResponse.isCommitted();
+        count = 0;
+    }
+
+    int getBufferSize() {
+        return buf.length;
+    }
+
+    void setBufferSize(int size) {
+        assert !servletResponse.isCommitted();
+        checkState(count == 0, "Response body content has been written");
+        buf = new byte[size];
+    }
+}
