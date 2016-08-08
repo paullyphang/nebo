@@ -26,9 +26,11 @@
 
    400并发下，nebo吞吐量约为11000   tomcat吞吐量约为10000
 
- 
 
 
 ### 接下来计划  ###
-1. 优化项目结构，抽象模块，整理第三方协议通用接口
-2. 优化nebo性能
+1. 优化nebo性能
+2. 由于hessina基于http协议,没法通过mic路由处理，所以计划在hessina基础（主要使用hessina序列化）设计一套nebo协议
+   初步协议格式
+   |mic|seqid|size|service|hessian|
+   |        header        |body   |

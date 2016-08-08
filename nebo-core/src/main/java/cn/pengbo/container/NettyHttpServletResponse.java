@@ -111,11 +111,6 @@ public class NettyHttpServletResponse implements HttpServletResponse {
         return response;
     }
 
-//    @VisibleForTesting
-//    CharSequence getFormattedDate() {
-//        return HttpHeaders.newEntity(FORMAT.get().format(new Date()));
-//    }
-
     @Override
     public void addCookie(Cookie cookie) {
         cookies.add(cookie);

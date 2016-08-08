@@ -17,7 +17,6 @@
 
 package cn.pengbo.container;
 
-import cn.pengbo.DispatcherInbound;
 import cn.pengbo.hessian.HessianConstant;
 import cn.pengbo.hessian.HessianFilter;
 import cn.pengbo.thrift.ThriftEndpoint;

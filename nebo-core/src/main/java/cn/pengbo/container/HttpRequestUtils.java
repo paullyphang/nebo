@@ -1,6 +1,3 @@
-/*
- * Copyright 2015-2020 msun.com All right reserved.
- */
 package cn.pengbo.container;
 
 import java.util.ArrayList;

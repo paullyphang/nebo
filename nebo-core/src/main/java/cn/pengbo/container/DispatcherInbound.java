@@ -46,7 +46,6 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
             List<ProtocolRouter> protocolRouterList = ProtocolRouterFactory.loadAllProtocolRouter();
             for(ProtocolRouter router : protocolRouterList){
                 if(router.isProtocol(buffer)){
-                    log.info(">>>>>>>>>>>>>>>>>>> channelRead");
                     router.setRounter(ctx,context);
                     ctx.fireChannelRead(msg);
                 }
