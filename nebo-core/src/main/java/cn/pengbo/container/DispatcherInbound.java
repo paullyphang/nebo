@@ -1,12 +1,9 @@
-package cn.pengbo;
+package cn.pengbo.container;
 
 
 
-import cn.pengbo.container.ServletContentHandler;
-import cn.pengbo.container.NettyEmbeddedContext;
-import cn.pengbo.container.RequestDispatcherHandler;
-import cn.pengbo.thrift.DefaultThriftFrameDecoder;
-import cn.pengbo.thrift.ThriftInboundHandler;
+import cn.pengbo.protocol.ProtocolRouter;
+import cn.pengbo.protocol.ProtocolRouterFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -15,14 +12,18 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import org.apache.thrift.protocol.TBinaryProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
+import java.util.List;
 
 /**
  * Created by pengbo on 2016/6/28.
  */
 public class DispatcherInbound extends ChannelInboundHandlerAdapter {
 
+    private static final Logger log = LoggerFactory.getLogger(DispatcherInbound.class);
     private final InetSocketAddress address;
     private final NettyEmbeddedContext context;
     private final RequestDispatcherHandler requestDispatcherHandler;
@@ -39,10 +40,19 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         final int magic2 = buffer.getUnsignedByte(buffer.readerIndex() + 1);
         if(isHttp(magic1,magic2)) {
             switchToHttp(ctx);
+            ctx.fireChannelRead(msg);
         }else {
-            switchToThrift(ctx);
+            //获取其他协议路由
+            List<ProtocolRouter> protocolRouterList = ProtocolRouterFactory.loadAllProtocolRouter();
+            for(ProtocolRouter router : protocolRouterList){
+                if(router.isProtocol(buffer)){
+                    log.info(">>>>>>>>>>>>>>>>>>> channelRead");
+                    router.setRounter(ctx,context);
+                    ctx.fireChannelRead(msg);
+                }
+            }
         }
-        ctx.fireChannelRead(msg);
+
     }
 
     private void switchToHttp(ChannelHandlerContext ctx) {
@@ -52,15 +62,6 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         p.addLast(new ChunkedWriteHandler());
         p.addLast("servletInput", new ServletContentHandler(context,ctx.channel()));
         p.addLast(new DefaultEventExecutorGroup(200), "filterChain", requestDispatcherHandler);
-        p.remove(this);
-    }
-
-
-
-    private void switchToThrift(ChannelHandlerContext ctx) {
-        ChannelPipeline p = ctx.pipeline();
-        p.addLast(new DefaultThriftFrameDecoder(new TBinaryProtocol.Factory(true, true)));
-        p.addLast(new ThriftInboundHandler(context));
         p.remove(this);
     }
 
@@ -76,5 +77,8 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
                         magic1 == 'T' && magic2 == 'R' || // TRACE
                         magic1 == 'C' && magic2 == 'O';   // CONNECT
     }
+
+
+
 
 }
