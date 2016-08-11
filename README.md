@@ -32,5 +32,9 @@
 1. 优化nebo性能
 2. 由于hessina基于http协议,没法通过mic路由处理，所以计划在hessina基础（主要使用hessina序列化）设计一套nebo协议
    初步协议格式 :    |mic|seqid|size|service|hessian|
+3. 设计服务治理接口
+4. 增加多一个监控模块 
 
+待续。。。。。
 
+PS: 预计半年完成！！！！！！！不偷懒的话
