@@ -1,8 +1,8 @@
-import cn.pengbo.App;
-import cn.pengbo.hessian.IHelloService;
-import cn.pengbo.thrift.HelloWorld;
-import cn.pengbo.thrift.Result;
-import cn.pengbo.thrift.User;
+import io.nebo.App;
+import io.nebo.hessian.IHelloService;
+import io.nebo.thrift.HelloWorld;
+import io.nebo.thrift.Result;
+import io.nebo.thrift.User;
 import com.caucho.hessian.client.HessianProxyFactory;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
