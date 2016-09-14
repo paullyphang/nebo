@@ -1,5 +1,7 @@
 package io.nebo.protocol;
 
+import io.nebo.thrift.ThriftProtocolRouter;
+
 import java.util.ArrayList;
 import java.util.List;
 

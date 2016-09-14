@@ -1,6 +1,7 @@
-package io.nebo.protocol;
+package io.nebo.thrift;
 
 import io.nebo.container.NettyEmbeddedContext;
+import io.nebo.protocol.ProtocolRouter;
 import io.nebo.thrift.DefaultThriftFrameDecoder;
 import io.nebo.thrift.ThriftEndpoint;
 import io.nebo.thrift.ThriftInboundHandler;
