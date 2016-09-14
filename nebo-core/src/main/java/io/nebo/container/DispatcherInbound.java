@@ -62,7 +62,7 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         p.addLast(new HttpObjectAggregator(65536));
         p.addLast(new ChunkedWriteHandler());
         p.addLast("servletInput", new ServletContentHandler(context,ctx.channel()));
-        p.addLast(new DefaultEventExecutorGroup(200), "filterChain", requestDispatcherHandler);
+        p.addLast(new DefaultEventExecutorGroup(200),requestDispatcherHandler);
         p.remove(this);
     }
 
