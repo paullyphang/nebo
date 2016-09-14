@@ -29,8 +29,8 @@
 
 ### 接下来计划  ###
 1. 优化nebo性能
-2. 由于hessina基于http协议,没法通过mic路由处理，所以计划在hessina基础（主要使用hessina序列化）设计一套nebo协议
-   初步协议格式 :    |mic|seqid|size|service|hessian|
+2. 由于hessina基于http协议,没法通过mic路由处理，重构讲取消hessian, 所以计划在protobuf基础,设计一套nebo协议
+   初步协议格式 :    |mic|seqid|size|service|protobuf|
 3. 设计服务治理接口
 4. 增加多一个监控模块 
 
