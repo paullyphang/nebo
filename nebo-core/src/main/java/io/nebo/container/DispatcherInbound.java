@@ -27,7 +27,8 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
     private final NettyEmbeddedContext context;
     private final RequestDispatcherHandler requestDispatcherHandler;
     private List<ProtocolRouter> protocolRouterList = ProtocolRouterFactory.loadAllProtocolRouter();
-
+    private static  int MAX_CONTENT_LENGTH = 65536;
+    private static  int THREAD_SIZE = 50;
     public DispatcherInbound(InetSocketAddress address, NettyEmbeddedContext context) {
         this.address = address;
         this.context = context;
@@ -58,11 +59,11 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
 
     private void switchToHttp(ChannelHandlerContext ctx) {
         ChannelPipeline p = ctx.pipeline();
-        p.addLast("codec", new HttpServerCodec(4096, 8192, 8192, false));
-        p.addLast(new HttpObjectAggregator(65536));
+        p.addLast(new HttpServerCodec());
+        p.addLast(new HttpObjectAggregator(MAX_CONTENT_LENGTH));
         p.addLast(new ChunkedWriteHandler());
-        p.addLast("servletInput", new ServletContentHandler(context,ctx.channel()));
-        p.addLast(new DefaultEventExecutorGroup(200),requestDispatcherHandler);
+        p.addLast(new ServletContentHandler(context,ctx.channel()));
+        p.addLast(new DefaultEventExecutorGroup(THREAD_SIZE),requestDispatcherHandler);
         p.remove(this);
     }
 
