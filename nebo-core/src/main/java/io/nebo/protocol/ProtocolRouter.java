@@ -13,4 +13,5 @@ public interface ProtocolRouter {
 
     public void setRounter(ChannelHandlerContext ctx,NettyEmbeddedContext context);
 
+    public void init(NettyEmbeddedContext context);
 }

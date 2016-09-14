@@ -14,7 +14,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.net.InetSocketAddress;
 import java.util.List;
 
@@ -27,10 +26,15 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
     private final InetSocketAddress address;
     private final NettyEmbeddedContext context;
     private final RequestDispatcherHandler requestDispatcherHandler;
+    private List<ProtocolRouter> protocolRouterList = ProtocolRouterFactory.loadAllProtocolRouter();
+
     public DispatcherInbound(InetSocketAddress address, NettyEmbeddedContext context) {
         this.address = address;
         this.context = context;
         this.requestDispatcherHandler = new RequestDispatcherHandler(context);
+        for(ProtocolRouter router : protocolRouterList){
+           router.init(context);
+        }
     }
 
     @Override
@@ -43,7 +47,6 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
             ctx.fireChannelRead(msg);
         }else {
             //获取其他协议路由
-            List<ProtocolRouter> protocolRouterList = ProtocolRouterFactory.loadAllProtocolRouter();
             for(ProtocolRouter router : protocolRouterList){
                 if(router.isProtocol(buffer)){
                     router.setRounter(ctx,context);
@@ -51,7 +54,6 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
                 }
             }
         }
-
     }
 
     private void switchToHttp(ChannelHandlerContext ctx) {
@@ -63,6 +65,7 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         p.addLast(new DefaultEventExecutorGroup(200), "filterChain", requestDispatcherHandler);
         p.remove(this);
     }
+
 
     private static boolean isHttp(int magic1, int magic2) {
         return
