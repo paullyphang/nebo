@@ -1,3 +1,5 @@
+.gradle
+
 # Eclipse project files
 .project
 .classpath
@@ -12,3 +14,8 @@
 # Build targets
 /target
 */target
+classes/
+/build
+buildSrc/build
+/nebo-*/build
+

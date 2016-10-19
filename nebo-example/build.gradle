@@ -1,0 +1,8 @@
+
+description = ''
+dependencies {
+  compile project(':nebo-core')
+}
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}

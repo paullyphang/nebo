@@ -29,6 +29,7 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
     private List<ProtocolRouter> protocolRouterList = ProtocolRouterFactory.loadAllProtocolRouter();
     private static  int MAX_CONTENT_LENGTH = 65536;
     private static  int THREAD_SIZE = 50;
+
     public DispatcherInbound(InetSocketAddress address, NettyEmbeddedContext context) {
         this.address = address;
         this.context = context;
@@ -43,6 +44,7 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         ByteBuf buffer = (ByteBuf) msg;
         final int magic1 = buffer.getUnsignedByte(buffer.readerIndex());
         final int magic2 = buffer.getUnsignedByte(buffer.readerIndex() + 1);
+        log.info("addressIP --> " + address.getAddress().getHostAddress() + " magic1 --> " + magic1);
         if(isHttp(magic1,magic2)) {
             switchToHttp(ctx);
             ctx.fireChannelRead(msg);

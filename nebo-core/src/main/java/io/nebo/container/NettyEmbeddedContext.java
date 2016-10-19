@@ -144,7 +144,7 @@ public class NettyEmbeddedContext implements ServletContext {
                 return null;
             }
             // FIXME proper path matching
-            List<Filter> filters = new ArrayList<>();
+            List<Filter> filters = new ArrayList();
             for (NettyFilterRegistration registration : this.filters.values()) {
                 filters.add(registration.getFilter());
             }

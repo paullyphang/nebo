@@ -1,0 +1,6 @@
+rootProject.name = 'nebo-parent'
+include ':nebo-core'
+include ':nebo-example'
+
+project(':nebo-core').projectDir = "$rootDir/nebo-core" as File
+project(':nebo-example').projectDir = "$rootDir/nebo-example" as File
