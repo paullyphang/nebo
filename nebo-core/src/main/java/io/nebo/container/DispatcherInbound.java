@@ -47,16 +47,17 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         log.info("addressIP --> " + address.getAddress().getHostAddress() + " magic1 --> " + magic1);
         if(isHttp(magic1,magic2)) {
             switchToHttp(ctx);
-            ctx.fireChannelRead(msg);
         }else {
             //获取其他协议路由
             for(ProtocolRouter router : protocolRouterList){
                 if(router.isProtocol(buffer)){
                     router.setRounter(ctx,context);
-                    ctx.fireChannelRead(msg);
+
                 }
             }
         }
+        clearRounter(ctx);
+        ctx.fireChannelRead(msg);
     }
 
     private void switchToHttp(ChannelHandlerContext ctx) {
@@ -66,9 +67,13 @@ public class DispatcherInbound extends ChannelInboundHandlerAdapter {
         p.addLast(new ChunkedWriteHandler());
         p.addLast(new ServletContentHandler(context,ctx.channel()));
         p.addLast(new DefaultEventExecutorGroup(THREAD_SIZE),requestDispatcherHandler);
-        p.remove(this);
     }
 
+
+    private void clearRounter(ChannelHandlerContext ctx){
+        ChannelPipeline p = ctx.pipeline();
+        p.remove(this);
+    }
 
     private static boolean isHttp(int magic1, int magic2) {
         return
