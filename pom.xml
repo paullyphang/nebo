@@ -17,13 +17,22 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.3.RELEASE</version>
+        <version>${spring.boot.version}</version>
     </parent>
 
     <properties>
-        <commons.lang3>3.4</commons.lang3>
+        <commons.lang3.version>3.4</commons.lang3.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <commons.cli>1.3.1</commons.cli>
+        <commons.cli.version>1.3.1</commons.cli.version>
+        <commons-io.version>2.4</commons-io.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
+        <spring.boot.version>1.3.3.RELEASE</spring.boot.version>
+        <thrift.version>0.9.2</thrift.version>
+        <fastjson.version>1.2.10</fastjson.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <netty.version>4.1.0.CR3</netty.version>
+        <hessian.version>4.0.38</hessian.version>
+        <java.compiler.version>1.8</java.compiler.version>
     </properties>
 
 
@@ -38,7 +47,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <version>${javax.servlet.version}</version>
         </dependency>
 
         <dependency>
@@ -83,13 +92,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <version>${commons.lang3.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>${commons-io.version}</version>
         </dependency>
 
         <dependency>
@@ -109,14 +118,14 @@
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
-            <version>0.9.2</version>
+            <version>${thrift.version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.10</version>
+            <version>${fastjson.version}</version>
         </dependency>
 
         <dependency>
@@ -126,25 +135,25 @@
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-            <version>1.3.1</version>
+            <version>${commons.cli.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>${commons-lang.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.0.CR3</version>
+            <version>${netty.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
-            <version>4.0.38</version>
+            <version>${hessian.version}</version>
         </dependency>
 
     </dependencies>
@@ -156,8 +165,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${java.compiler.version}</source>
+                    <target>${java.compiler.version}</target>
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
