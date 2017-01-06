@@ -16,8 +16,6 @@ subprojects {
 
     repositories {
         mavenLocal()
-
-        maven { url "http://192.168.8.231:8081/nexus/content/groups/public/" }
         maven { url "http://repo.maven.apache.org/maven2" }
     }
 
